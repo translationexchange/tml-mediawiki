@@ -24,9 +24,9 @@ $wgHooks['ParserFirstCallInit'][] = 'tr8nSetup';
 $wgHooks['BeforePageDisplay'][] = 'tr8nBeforeDisplay';
 $wgHooks['NormalizeMessageKey'][] = 'tr8nNormalizeMessageKey';
 
-$wgTr8nServerUrl =  "http://localhost:3000";
-$wgTr8nApplicationKey =  "default";
-$wgTr8nApplicationSecret =  "e6ee64803c7b1cf51";
+//$wgTr8nServerUrl =  "http://localhost:3000";
+//$wgTr8nApplicationKey =  "default";
+//$wgTr8nApplicationSecret =  "e6ee64803c7b1cf51";
 
 /**
  * @param $parser Parser
@@ -40,9 +40,10 @@ function tr8nSetup( &$parser ) {
     tr8n_init_client_sdk($wgTr8nServerUrl, $wgTr8nApplicationKey, $wgTr8nApplicationSecret);
 
     global $wgOut;
-    $wgOut->addScript('<script type="text/javascript" src="' . \Tr8n\Config::instance()->application->host . '/tr8n/api/proxy/boot.js?debug=true"></script>'. "\n");
+    $wgOut->addScript('<script type="text/javascript" src="' . \Tr8n\Config::instance()->application->host . '/tr8n/api/proxy/boot.js?client_id=' . $wgTr8nApplicationKey . '"></script>'. "\n");
 
     $parser->setHook( 'tr8n:tr', 'tr8nTranslateRender' );
+    $parser->setHook( 'tr8n:trh', 'tr8nTranslateHtmlRender' );
     $parser->setHook( 'tr8n:block', 'tr8nBlockRender' );
     return true;
 }
@@ -53,7 +54,6 @@ function tr8nBeforeDisplay( $out ) {
 }
 
 function tr8nNormalizeMessageKey($key, $useDB, $langCode, $transform ) {
-
     return "a" . $transform;
 }
 
@@ -75,21 +75,16 @@ function tr8nBlockRender( $input, array $args, Parser $parser, PPFrame $frame ) 
     return $content;
 }
 
-function tr8nTranslateRender( $input, array $args, Parser $parser, PPFrame $frame ) {
-    $parser->disableCache();
-
-    if (\Tr8n\Config::instance()->isDisabled()) {
-        return $input;
-    }
-
-    if ($input == null) return $input;
-
-    $label = trim($input);
-    $description = isset($args['context']) ? $args['context'] : null;
+function tr8nPrepareAttributes($args) {
     $tokens = array();
     $options = array();
 
     if (is_string($args)) $args = array();
+
+    $description = isset($args['description']) ? $args['description'] : null;
+    if ($description == null) {
+        $description = isset($args['context']) ? $args['context'] : null;
+    }
 
     if (isset($args['tokens'])) {
         $tokens = json_decode($args['tokens'], true);
@@ -123,8 +118,50 @@ function tr8nTranslateRender( $input, array $args, Parser $parser, PPFrame $fram
         $options['split'] = $args['split'];
     }
 
+    return array("description" => $description, "tokens" => $tokens, "options" => $options);
+}
+
+function tr8nTranslateRender( $input, array $args, Parser $parser, PPFrame $frame ) {
+    $parser->disableCache();
+
+    if (\Tr8n\Config::instance()->isDisabled()) {
+        return $input;
+    }
+
+    if ($input == null) return $input;
+    $label = trim($input);
+    if ($label == "") return $label;
+
+    $args = tr8nPrepareAttributes($args);
+
     try {
-        return tr($label, $description, $tokens, $options);
+        return tr($label, $args["description"], $args["tokens"], $args["options"]);
+    } catch(\Tr8n\Tr8nException $e) {
+        \Tr8n\Logger::instance()->info($e->getMessage());
+        return $input;
+    }
+}
+
+function tr8nTranslateHtmlRender( $input, array $args, Parser $parser, PPFrame $frame ) {
+    $parser->disableCache();
+
+    if (\Tr8n\Config::instance()->isDisabled()) {
+        return $input;
+    }
+
+    if ($input == null) return $input;
+    $label = trim($input);
+    if ($label == "") return $label;
+
+    $args = tr8nPrepareAttributes($args);
+
+    $content = $parser->recursiveTagParse( $label );
+
+    try {
+        if ($content != strip_tags($content)) {
+            return trh($content, $args["description"], $args["tokens"], $args["options"]);
+        }
+        return tr($content, $args["description"], $args["tokens"], $args["options"]);
     } catch(\Tr8n\Tr8nException $e) {
         \Tr8n\Logger::instance()->info($e->getMessage());
         return $input;
