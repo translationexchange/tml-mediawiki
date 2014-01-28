@@ -7,6 +7,9 @@ Tr8n Plugin for MediaWiki
 
 This plugin allows you to translate MediaWiki sites using Tr8n for PHP and manage translations on Tr8nHub service.
 
+[![Latest Stable Version](https://poser.pugx.org/tr8n/tr8n-mediawiki-plugin/v/stable.png)](https://packagist.org/packages/tr8n/tr8n-mediawiki-plugin)
+[![Dependency Status](https://www.versioneye.com/user/projects/52e4b4a3ec1375b57600000c/badge.png)](https://www.versioneye.com/user/projects/52e4b4a3ec1375b57600000c)
+
 
 Installation
 ==================
