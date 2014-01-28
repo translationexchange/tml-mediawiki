@@ -1,3 +1,0 @@
-[submodule "vendor/tr8n_php_clientsdk"]
-	path = vendor/tr8n_php_clientsdk
-	url = git@github.com:tr8n/tr8n_php_clientsdk.git
