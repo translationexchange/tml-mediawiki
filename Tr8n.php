@@ -24,10 +24,6 @@ $wgHooks['ParserFirstCallInit'][] = 'tr8nSetup';
 $wgHooks['BeforePageDisplay'][] = 'tr8nBeforeDisplay';
 $wgHooks['NormalizeMessageKey'][] = 'tr8nNormalizeMessageKey';
 
-//$wgTr8nServerUrl =  "http://localhost:3000";
-//$wgTr8nApplicationKey =  "default";
-//$wgTr8nApplicationSecret =  "e6ee64803c7b1cf51";
-
 /**
  * @param $parser Parser
  * @return bool
@@ -48,15 +44,33 @@ function tr8nSetup( &$parser ) {
     return true;
 }
 
+/**
+ * @param $out
+ * @return bool
+ */
 function tr8nBeforeDisplay( $out ) {
     \Tr8n\Config::instance()->application->submitMissingKeys();
     return true;
 }
 
+/**
+ * @param $key
+ * @param $useDB
+ * @param $langCode
+ * @param $transform
+ * @return string
+ */
 function tr8nNormalizeMessageKey($key, $useDB, $langCode, $transform ) {
     return "a" . $transform;
 }
 
+/**
+ * @param $input
+ * @param array $args
+ * @param Parser $parser
+ * @param PPFrame $frame
+ * @return mixed
+ */
 function tr8nBlockRender( $input, array $args, Parser $parser, PPFrame $frame ) {
     if (\Tr8n\Config::instance()->isDisabled()) {
         return $parser->recursiveTagParse($input);
@@ -75,6 +89,10 @@ function tr8nBlockRender( $input, array $args, Parser $parser, PPFrame $frame ) 
     return $content;
 }
 
+/**
+ * @param $args
+ * @return array
+ */
 function tr8nPrepareAttributes($args) {
     $tokens = array();
     $options = array();
@@ -121,6 +139,13 @@ function tr8nPrepareAttributes($args) {
     return array("description" => $description, "tokens" => $tokens, "options" => $options);
 }
 
+/**
+ * @param $input
+ * @param array $args
+ * @param Parser $parser
+ * @param PPFrame $frame
+ * @return mixed|string
+ */
 function tr8nTranslateRender( $input, array $args, Parser $parser, PPFrame $frame ) {
     $parser->disableCache();
 
@@ -142,6 +167,13 @@ function tr8nTranslateRender( $input, array $args, Parser $parser, PPFrame $fram
     }
 }
 
+/**
+ * @param $input
+ * @param array $args
+ * @param Parser $parser
+ * @param PPFrame $frame
+ * @return array|mixed|string
+ */
 function tr8nTranslateHtmlRender( $input, array $args, Parser $parser, PPFrame $frame ) {
     $parser->disableCache();
 
