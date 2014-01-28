@@ -13,12 +13,12 @@ $wgExtensionCredits['Tr8n'][] = array(
     'path' => __FILE__,
     'name' => 'Parser for tml tags',
     'descriptionmsg' => 'Tags for using Tr8n Translation Markup Language inside MediaWiki',
-    'version' => '2013-07-25',
+    'version' => '2014-01-27',
     'author' => 'Michael Berkovich',
     'url' => 'https://www.mediawiki.org/wiki/Extension:Tr8n',
 );
 
-require_once('vendor/tr8n_php_clientsdk/library/Tr8n.php');
+require_once('vendor/tr8n/tr8n-client-sdk/library/Tr8n.php');
 
 $wgHooks['ParserFirstCallInit'][] = 'tr8nSetup';
 $wgHooks['BeforePageDisplay'][] = 'tr8nBeforeDisplay';
@@ -40,7 +40,7 @@ function tr8nSetup( &$parser ) {
     tr8n_init_client_sdk($wgTr8nServerUrl, $wgTr8nApplicationKey, $wgTr8nApplicationSecret);
 
     global $wgOut;
-    $wgOut->addScript('<script type="text/javascript" src="' . \Tr8n\Config::instance()->application->host . '/tr8n/api/proxy/boot.js?client_id=' . $wgTr8nApplicationKey . '"></script>'. "\n");
+    $wgOut->addScript('<script type="text/javascript" src="' . \Tr8n\Config::instance()->application->jsBootUrl() . '"></script>'. "\n");
 
     $parser->setHook( 'tr8n:tr', 'tr8nTranslateRender' );
     $parser->setHook( 'tr8n:trh', 'tr8nTranslateHtmlRender' );

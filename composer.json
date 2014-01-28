@@ -1,0 +1,20 @@
+{
+    "name": "tr8n/tr8n-mediawiki-plugin",
+    "description": "Tr8n MediaWiki Plugin",
+    "keywords": ["mediawiki", "plugin", "tr8n", "translation", "i18n", "internationalization", "t9n"],
+    "homepage": "https://tr8nhub.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Berkovich",
+            "email": "michael@tr8nhub.com",
+            "homepage": "https://tr8nhub.com"
+        }
+    ],
+    "type": "mediawiki-extension",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.0",
+        "tr8n/tr8n-client-sdk": "dev-master"
+    }
+}
