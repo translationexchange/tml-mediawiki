@@ -2,15 +2,10 @@
   <img src="https://raw.github.com/tr8n/tr8n/master/doc/screenshots/tr8nlogo.png">
 </p>
 
-
 Tr8n Plugin for MediaWiki
 =====================
 
-This plugin allows to translate MediaWiki sites using Tr8n PHP SDK and manage translations in Tr8n service.
-
-To learn more about how to install, integrate and use this plugin, please visit:
-
-http://wiki.tr8nhub.com/index.php?title=Tr8n_MediaWiki_Plugin
+This plugin allows you to translate MediaWiki sites using Tr8n for PHP and manage translations on Tr8nHub service.
 
 
 Installation
@@ -52,7 +47,7 @@ Once you have created a new application, go to the security tab in the applicati
 
 Now open your LocalSettings.php file and add the following lines:
 
-        require_once( "$IP/extensions/Tr8n/Tr8n.php" );
+        require_once( "$IP/extensions/tr8n-mediawiki-plugin/Tr8n.php" );
 
         $wgTr8nServerUrl =  "https://tr8nhub.com";
         $wgTr8nApplicationKey =  "YOUR_APPLICATION_KEY";
@@ -60,3 +55,8 @@ Now open your LocalSettings.php file and add the following lines:
 
 
 Now you are ready to invite translators and start translating your MediaWiki site.
+
+
+To learn more about how to integrate and use this plugin, please visit:
+
+http://wiki.tr8nhub.com/index.php?title=Tr8n_MediaWiki_Plugin
